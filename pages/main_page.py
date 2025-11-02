@@ -21,6 +21,9 @@ class MainPage(BasePage):
         Открывает нужный адрес
         """
         self.open_page(Data.STAND_URL)
+        self.click_element(MainPageLocators.COOKIE) # принимаем куки
+        self.scroll_down() 
+
         return self  # Возвращаем self для цепочки вызовов (fluent interface)
     
     
@@ -31,7 +34,7 @@ class MainPage(BasePage):
         """
         arrow_button = self._find_clickable_element(locator)
         arrow_button.click()
-        return self
+        
     
     def get_arrow_text(self, locator):
         """
@@ -46,4 +49,4 @@ class MainPage(BasePage):
        """
        actual_text = self.get_arrow_text(locator)
        assert actual_text == expected_text, f"Text mismatch: Expected '{expected_text}', but got '{actual_text}'"
-       return self
+    

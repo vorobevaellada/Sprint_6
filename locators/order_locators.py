@@ -36,3 +36,9 @@ class OrderLocators:
     ORDER_YES = (By.XPATH, "//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Да']") # Кнопка "Да"
 
     CHECK_STATUS = (By.XPATH, "//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Посмотреть статус']") # Кнопка "Посмотреть статус"
+
+    CANCEL_THE_ORDER = (By.XPATH, "//button[.='Отменить заказ']")
+
+    SCOOTER_LOGO = (By.XPATH, "//a[@class='Header_LogoScooter__3lsAR']") # Лого Самоката
+
+    YANDEX_LOGO = (By.XPATH, "//a[@class='Header_LogoYandex__3TSOI']") # Лого Яндекса

@@ -1,17 +1,11 @@
-#переменные с URL-ми
-#data.py
 class Data:
 
     STAND_URL = "https://qa-scooter.praktikum-services.ru/" #главная страница тестового стенда
         
     ORDER_URL = STAND_URL + "order" # Страница "Заказать"
 
-    #PASSWORD_RECOVERY = STAND_URL + "forgot-password" # Страница востановление пароля
+    DZEN_URL = "https://dzen.ru/?yredirect=true" # главная страница Дзена
     
-    #LOGIN_PAGE_URL = STAND_URL + "login" #сстраница входа, она появляется после успешной регистрации(в тех потдержке сказали по этому адресу заходить)
-    
-    #PROFILE_PAGE_URL = STAND_URL + "profile" # Страница профиля, когда вошли в личный кабинет
-
 class Test_Data:
     
     TEXT_ARROW_0 = 'Сутки — 400 рублей. Оплата курьеру — наличными или картой.'

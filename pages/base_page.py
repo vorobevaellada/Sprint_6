@@ -27,7 +27,6 @@ class BasePage:
         Вспомогательный метод поиска элемента
         Скрывает детали работы с WebDriver
         """
-        # return self._wait.until(EC.presence_of_element_located(locator))
         return self._wait.until(EC.visibility_of_element_located(locator))
     
     def _find_clickable_element(self, locator):
@@ -35,7 +34,6 @@ class BasePage:
         Вспомогательный метод поиска кликабельного элемента
         """
 
-        # может быть есть альтернативы element_to_be_clickable, более точные.
         return self._wait.until(EC.element_to_be_clickable(locator)) 
     
     def _get_text(self, locator):
@@ -62,6 +60,12 @@ class BasePage:
         Открывает указанный URL
         """
         self._driver.get(url)
+        
 
     def scroll_down(self):
         self._driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+
+    def send(self, found_locator, text):
+        found_locator.clear()
+        found_locator.send_keys(text)

@@ -10,6 +10,8 @@ from locators.order_locators import OrderLocators
 from data import Data
 from data import Test_Data
 from selenium.webdriver.support.ui import Select
+import time
+from urllib.parse import urlparse
 
 class OrderPage(MainPage ):
     """
@@ -23,6 +25,7 @@ class OrderPage(MainPage ):
         Открывает нужный адрес
         """
         self.open_page(Data.ORDER_URL)
+        self.click_element(MainPageLocators.COOKIE) # принимаем куки
         return self  # Возвращаем self для цепочки вызовов (fluent interface)
     
     def enter_name(self, name):
@@ -31,8 +34,7 @@ class OrderPage(MainPage ):
         Скрывает детали работы с полем
         """
         name_field = self._find_element(OrderLocators.NAME)
-        name_field.clear()
-        name_field.send_keys(name)
+        self.send(name_field, name)
         return self
     
     def enter_surname(self, surname):
@@ -40,8 +42,7 @@ class OrderPage(MainPage ):
         Вводит фамилию
         """
         surname_field = self._find_element(OrderLocators.SURNAME)
-        surname_field.clear()
-        surname_field.send_keys(surname)
+        self.send(surname_field, surname)
         return self
     
     def enter_address(self, address):
@@ -49,19 +50,10 @@ class OrderPage(MainPage ):
         Вводит адресс
         """
         address_field = self._find_element(OrderLocators.ADDRESS)
-        address_field.clear()
-        address_field.send_keys(address)
+        self.send( address_field, address,)
         return self
     
- #   def enter_metro(self, metro): # Это поле НЕ ввода, это выпадающий список
- #       """
- #       Вводит метро
- #       """
- #       metro_field = self._find_element(OrderLocators.METRO)
- #       metro_field.clear()
- #       metro_field.send_keys(metro)
- #       
- #       return self
+
 
     def enter_metro(self, metro):
         """
@@ -78,8 +70,7 @@ class OrderPage(MainPage ):
         Вводит телефон
         """
         phone_field = self._find_element(OrderLocators.PHONE)
-        phone_field.clear()
-        phone_field.send_keys(phone)
+        self.send(phone_field, phone)
         return self
     
      
@@ -97,8 +88,7 @@ class OrderPage(MainPage ):
         Вводит дату
         """
         when_to_deliver_field = self._find_element(OrderLocators.WHEN_TO_DELIVER)
-        when_to_deliver_field.clear()
-        when_to_deliver_field.send_keys(when_to_deliver)
+        self.send(when_to_deliver_field,when_to_deliver )
         # Кликаем по элементу с нужной датой
         date_button = self._find_element(OrderLocators.WHEN_TO_DELIVER_CLICK)
         date_button.click()
@@ -107,7 +97,7 @@ class OrderPage(MainPage ):
     def enter_rental_term(self):
         """
         Выбирает Срок аренды из выпадающего списка
-         """
+        """
         rental_term_field = self._find_element(OrderLocators.RENTAL_TERM)
         rental_term_field.click()  # Активируем поле для показа выпадающего списка
         rental_term_field = self._find_element(OrderLocators.RENTAL_TERM_TWO_DAYS)
@@ -118,7 +108,7 @@ class OrderPage(MainPage ):
     def enter_scooter_color(self):
         """
         Выбирает цвет самоката
-         """
+        """
         scooter_color_field = self._find_element(OrderLocators.BLACK_SCOOTER)
         scooter_color_field.click()
         return self
@@ -126,7 +116,7 @@ class OrderPage(MainPage ):
     def click_submit_order(self):
         """
         Нажимает кнопку "Заказать" для завершения заказа
-         """
+        """
         submit_order_field = self._find_element(OrderLocators.ORDER_BUTTON_IN_THE_ORDER)
         submit_order_field.click()
         return self
@@ -134,7 +124,7 @@ class OrderPage(MainPage ):
     def click_order_yes(self):
         """
         Нажимает кнопку "Заказать" для завершения заказа
-         """
+        """
         submit_order_field = self._find_element(OrderLocators.ORDER_YES)
         submit_order_field.click()
         return self
@@ -143,13 +133,22 @@ class OrderPage(MainPage ):
         """
         Проверяет присутствие элемента "Посмотреть статус заказа"
         Возвращает True, если элемент найден, иначе False
-    """
+        """
         try:
-            self._find_element(OrderLocators.CHECK_STATUS)
+            self._find_element(OrderLocators.CANCEL_THE_ORDER)
             return True
         except Exception:
             return False
 
+    def click_check_status(self):
+        """
+        Нажимает кнопку "Посмотреть статус" и ждет 3 секунды после клика
+        """
+        time.sleep(3)  # Ждем 3 секунды, чтобы заказ успел сформироваться
+        check_status_field = self._find_element(OrderLocators.CHECK_STATUS)
+        check_status_field.click()
+        time.sleep(3)  # Ждем 3 секунды после клика, чтобы обработка завершилась
+        return self
 
         
     def order(self, name, surname, address, metro, phone, when_to_deliver):
@@ -168,41 +167,12 @@ class OrderPage(MainPage ):
         self.enter_scooter_color()
         self.click_submit_order()
         self.click_order_yes()
+        self.click_check_status()
         return self
     
-    
-    
-    def get_success_message(self):
-        """
-        Возвращает сообщение об успехе
-        """
-        return self._get_text(LoginPageLocators.SUCCESS_MESSAGE)
-    
-    def get_error_message(self):
-        """
-        Возвращает сообщение об ошибке
-        """
-        return self._get_text(LoginPageLocators.ERROR_MESSAGE)
-    
-    def is_login_successful(self):
-        """
-        Проверяет, что вход выполнен успешно
-        Скрывает детали проверки от тестов
-        """
-        return self._is_element_present(LoginPageLocators.SUCCESS_MESSAGE)
-    
-    def is_error_displayed(self):
-        """
-        Проверяет, что отображается сообщение об ошибке
-        """
-        return self._is_element_present(LoginPageLocators.ERROR_MESSAGE)
-    
-    def clear_fields(self):
-        """
-        Очищает поля формы
-        """
-        username_field = self._find_element(LoginPageLocators.USERNAME_FIELD)
-        password_field = self._find_element(LoginPageLocators.PASSWORD_FIELD)
-        username_field.clear()
-        password_field.clear()
-        return self
+    def is_on_main_page(self):
+        """Проверяет, что текущая страница соответствует главной"""
+        current_url = self._driver.current_url  # Обращаемся к водителю через _driver
+        parsed_current_url = urlparse(current_url)
+        parsed_stand_url = urlparse(Data.STAND_URL)
+        return parsed_current_url.netloc == parsed_stand_url.netloc
