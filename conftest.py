@@ -12,7 +12,7 @@ from pages.order_page import OrderPage
 def driver():
     driver = webdriver.Firefox()
     yield driver
-    #driver.quit() # закомментировать, если хочется чтобы браузер не закрывался
+    driver.quit() # закомментировать, если хочется чтобы браузер не закрывался
 
 @pytest.fixture
 def main_page(driver):

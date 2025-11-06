@@ -4,7 +4,7 @@ class Data:
         
     ORDER_URL = STAND_URL + "order" # Страница "Заказать"
 
-    DZEN_URL = "https://dzen.ru/?yredirect=true" # главная страница Дзена
+    DZEN_URL = "dzen.ru" # главная страница Дзена
     
 class Test_Data:
     

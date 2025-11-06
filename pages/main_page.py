@@ -24,16 +24,15 @@ class MainPage(BasePage):
         self.click_element(MainPageLocators.COOKIE) # принимаем куки
         self.scroll_down() 
 
-        return self  # Возвращаем self для цепочки вызовов (fluent interface)
+       
     
     
     def click_element(self, locator):
         """
         Нажимает на элемент
-        (Возможно можно перенести этот метод в base_page)
         """
-        arrow_button = self._find_clickable_element(locator)
-        arrow_button.click()
+        click_button = self._find_clickable_element(locator)
+        click_button.click()
         
     
     def get_arrow_text(self, locator):

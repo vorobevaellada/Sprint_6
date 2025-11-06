@@ -69,3 +69,36 @@ class BasePage:
     def send(self, found_locator, text):
         found_locator.clear()
         found_locator.send_keys(text)
+    
+
+    
+    def current_url(self):
+        current_url = self._driver.current_url  # Обращаемся к водителю через _driver
+        return current_url
+
+
+
+    def wait_for_new_window(self, timeout=10):
+        """
+        Ждет появления нового окна
+        """
+        # Подождать, пока количество окон не станет равно 2
+        WebDriverWait(self._driver, timeout).until(
+            lambda driver: len(driver.window_handles) == 2
+        )
+
+    def switch_to_new_window(self):
+        """
+        Переключается на новое окно, отличающееся от оригинального
+        """
+        original_window = self._driver.current_window_handle
+
+        # Находим новое окно
+        for window_handle in self._driver.window_handles:
+            if window_handle != original_window:
+                self._driver.switch_to.window(window_handle)
+                break
+        
+        WebDriverWait(self._driver, 10).until(
+            lambda driver: driver.current_url != "about:blank" and driver.current_url != ""
+        )

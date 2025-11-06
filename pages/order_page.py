@@ -3,7 +3,7 @@ Page Object для Основной страницы
 """
 
 from selenium.webdriver.common.by import By
-from .base_page import BasePage
+from pages.base_page import BasePage
 from .main_page import MainPage
 from locators.main_page_locators import MainPageLocators
 from locators.order_locators import OrderLocators
@@ -12,6 +12,8 @@ from data import Test_Data
 from selenium.webdriver.support.ui import Select
 import time
 from urllib.parse import urlparse
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class OrderPage(MainPage ):
     """
@@ -26,7 +28,7 @@ class OrderPage(MainPage ):
         """
         self.open_page(Data.ORDER_URL)
         self.click_element(MainPageLocators.COOKIE) # принимаем куки
-        return self  # Возвращаем self для цепочки вызовов (fluent interface)
+        
     
     def enter_name(self, name):
         """
@@ -35,7 +37,7 @@ class OrderPage(MainPage ):
         """
         name_field = self._find_element(OrderLocators.NAME)
         self.send(name_field, name)
-        return self
+       
     
     def enter_surname(self, surname):
         """
@@ -43,7 +45,7 @@ class OrderPage(MainPage ):
         """
         surname_field = self._find_element(OrderLocators.SURNAME)
         self.send(surname_field, surname)
-        return self
+        
     
     def enter_address(self, address):
         """
@@ -51,7 +53,7 @@ class OrderPage(MainPage ):
         """
         address_field = self._find_element(OrderLocators.ADDRESS)
         self.send( address_field, address,)
-        return self
+        
     
 
 
@@ -63,7 +65,7 @@ class OrderPage(MainPage ):
         metro_field.click()  # Активируем поле для показа выпадающего списка
         selected_option = self._find_element(OrderLocators.METRO_CHERKIZOVSKAYA)
         selected_option.click()  # Выбираем пункт Черкизовская
-        return self
+       
     
     def enter_phone(self, phone):
         """
@@ -71,7 +73,7 @@ class OrderPage(MainPage ):
         """
         phone_field = self._find_element(OrderLocators.PHONE)
         self.send(phone_field, phone)
-        return self
+        
     
      
     
@@ -81,7 +83,7 @@ class OrderPage(MainPage ):
         """
         next_button = self._find_clickable_element(OrderLocators.NEXT)
         next_button.click()
-        return self
+      
     
     def enter_when_to_deliver(self, when_to_deliver):
         """
@@ -92,7 +94,7 @@ class OrderPage(MainPage ):
         # Кликаем по элементу с нужной датой
         date_button = self._find_element(OrderLocators.WHEN_TO_DELIVER_CLICK)
         date_button.click()
-        return self
+        
     
     def enter_rental_term(self):
         """
@@ -102,7 +104,7 @@ class OrderPage(MainPage ):
         rental_term_field.click()  # Активируем поле для показа выпадающего списка
         rental_term_field = self._find_element(OrderLocators.RENTAL_TERM_TWO_DAYS)
         rental_term_field.click()  # Выбираем пункт Двое суток
-        return self
+        
     
     
     def enter_scooter_color(self):
@@ -111,7 +113,7 @@ class OrderPage(MainPage ):
         """
         scooter_color_field = self._find_element(OrderLocators.BLACK_SCOOTER)
         scooter_color_field.click()
-        return self
+        
     
     def click_submit_order(self):
         """
@@ -119,7 +121,7 @@ class OrderPage(MainPage ):
         """
         submit_order_field = self._find_element(OrderLocators.ORDER_BUTTON_IN_THE_ORDER)
         submit_order_field.click()
-        return self
+      
     
     def click_order_yes(self):
         """
@@ -127,28 +129,18 @@ class OrderPage(MainPage ):
         """
         submit_order_field = self._find_element(OrderLocators.ORDER_YES)
         submit_order_field.click()
-        return self
+        
     
-    def is_element_present(self):
+    def is_view_status_element_present(self):
         """
-        Проверяет присутствие элемента "Посмотреть статус заказа"
+        Проверяет присутствие элемента "Заказ оформлен"
         Возвращает True, если элемент найден, иначе False
         """
         try:
-            self._find_element(OrderLocators.CANCEL_THE_ORDER)
+            self._find_element(OrderLocators.ORDER_CONFIRMED)
             return True
         except Exception:
-            return False
-
-    def click_check_status(self):
-        """
-        Нажимает кнопку "Посмотреть статус" и ждет 3 секунды после клика
-        """
-        time.sleep(3)  # Ждем 3 секунды, чтобы заказ успел сформироваться
-        check_status_field = self._find_element(OrderLocators.CHECK_STATUS)
-        check_status_field.click()
-        time.sleep(3)  # Ждем 3 секунды после клика, чтобы обработка завершилась
-        return self
+            return False     
 
         
     def order(self, name, surname, address, metro, phone, when_to_deliver):
@@ -167,12 +159,20 @@ class OrderPage(MainPage ):
         self.enter_scooter_color()
         self.click_submit_order()
         self.click_order_yes()
-        self.click_check_status()
-        return self
+        
+        
+        
     
     def is_on_main_page(self):
         """Проверяет, что текущая страница соответствует главной"""
-        current_url = self._driver.current_url  # Обращаемся к водителю через _driver
-        parsed_current_url = urlparse(current_url)
+        
+        parsed_current_url = urlparse(self.current_url())
         parsed_stand_url = urlparse(Data.STAND_URL)
         return parsed_current_url.netloc == parsed_stand_url.netloc
+    
+    def click_element(self, locator):
+        """
+        Нажимает на элемент
+        """
+        click_button = self._find_clickable_element(locator)
+        click_button.click()
